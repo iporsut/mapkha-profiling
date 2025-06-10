@@ -109,11 +109,11 @@ func TestViaDictNotFinal(t *testing.T) {
 func testLookup(t *testing.T, expect *PrefixTreePointer, msg string) func(*PrefixTreePointer, bool) {
 	return func(child *PrefixTreePointer, found bool) {
 		if !found {
-			t.Errorf(msg)
+			t.Error(msg)
 		}
 
 		if !reflect.DeepEqual(expect, child) {
-			t.Errorf("Expect %q got %q", expect, child)
+			t.Errorf("Expect %v got %v", expect, child)
 		}
 	}
 }

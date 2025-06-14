@@ -2,7 +2,7 @@ package mapkha
 
 type DictEdgeBuilder struct {
 	dict     *Dict
-	pointers []*dictBuilderPointer
+	pointers []dictBuilderPointer
 }
 
 type dictBuilderPointer struct {
@@ -13,7 +13,7 @@ type dictBuilderPointer struct {
 }
 
 func NewDictEdgeBuilder(dict *Dict) *DictEdgeBuilder {
-	return &DictEdgeBuilder{dict, make([]*dictBuilderPointer, 0, 20)}
+	return &DictEdgeBuilder{dict, make([]dictBuilderPointer, 0, 20)}
 }
 
 func (builder *DictEdgeBuilder) updatePointer(pointer *dictBuilderPointer, ch rune) *dictBuilderPointer {
@@ -30,13 +30,13 @@ func (builder *DictEdgeBuilder) updatePointer(pointer *dictBuilderPointer, ch ru
 
 // Build - build new edge from dictionary
 func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
-	builder.pointers = append(builder.pointers, &dictBuilderPointer{S: context.I})
+	builder.pointers = append(builder.pointers, dictBuilderPointer{S: context.I})
 
 	newIndex := 0
 	for i, _ := range builder.pointers {
-		newPointer := builder.updatePointer(builder.pointers[i], context.Ch)
+		newPointer := builder.updatePointer(&builder.pointers[i], context.Ch)
 		if newPointer != nil {
-			builder.pointers[newIndex] = newPointer
+			builder.pointers[newIndex] = *newPointer
 			newIndex++
 		}
 	}

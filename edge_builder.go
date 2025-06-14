@@ -4,9 +4,9 @@ type EdgeBuildingContext struct {
 	runes        []rune
 	I            int
 	Ch           rune
-	Path         []*Edge
+	Path         []Edge
 	LeftBoundary int
-	BestEdge     *Edge
+	BestEdge     Edge
 }
 
 type EdgeBuilder interface {

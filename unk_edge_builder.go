@@ -5,7 +5,7 @@ type UnkEdgeBuilder struct {
 
 // Build - build dummy edge when there is no edge created.
 func (builder *UnkEdgeBuilder) Build(context *EdgeBuildingContext) (Edge, bool) {
-	if context.BestEdge != nil {
+	if context.BestEdge.EdgeType != 0 {
 		return Edge{}, false
 	}
 

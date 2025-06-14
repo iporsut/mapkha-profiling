@@ -29,7 +29,7 @@ func (builder *DictEdgeBuilder) updatePointer(pointer *dictBuilderPointer, ch ru
 }
 
 // Build - build new edge from dictionary
-func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
+func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) (Edge, bool) {
 	builder.pointers = append(builder.pointers, dictBuilderPointer{S: context.I})
 
 	newIndex := 0
@@ -42,24 +42,31 @@ func (builder *DictEdgeBuilder) Build(context *EdgeBuildingContext) *Edge {
 	}
 
 	builder.pointers = builder.pointers[:newIndex]
-	var bestEdge *Edge
+	var bestEdge Edge
+	var found bool
 
 	for _, pointer := range builder.pointers {
 		if pointer.IsFinal {
 			s := 1 + context.I - pointer.Offset
 			source := context.Path[s]
-			edge := &Edge{
+			edge := Edge{
 				S:         s,
 				EdgeType:  DICT,
 				WordCount: source.WordCount + 1,
 				UnkCount:  source.UnkCount}
-			if !bestEdge.IsBetterThan(edge) {
+			if !found {
+				bestEdge = edge
+				found = true
+				continue
+			}
+
+			if !bestEdge.IsBetterThan(&edge) {
 				bestEdge = edge
 			}
 		}
 	}
 
-	return bestEdge
+	return bestEdge, found
 }
 
 func (builder *DictEdgeBuilder) Reset() {

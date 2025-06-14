@@ -10,6 +10,6 @@ type EdgeBuildingContext struct {
 }
 
 type EdgeBuilder interface {
-	Build(*EdgeBuildingContext) *Edge
+	Build(*EdgeBuildingContext) (Edge, bool)
 	Reset()
 }

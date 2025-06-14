@@ -16,10 +16,10 @@ func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []*Edge {
 			globalContext.LeftBoundary = leftBoundary
 			globalContext.BestEdge = bestEdge
 
-			edge := edgeBuilder.Build(globalContext)
+			edge, found := edgeBuilder.Build(globalContext)
 
-			if edge != nil && edge.IsBetterThan(bestEdge) {
-				bestEdge = edge
+			if found && edge.IsBetterThan(bestEdge) {
+				bestEdge = &edge
 			}
 		}
 

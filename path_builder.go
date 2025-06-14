@@ -2,15 +2,15 @@ package mapkha
 
 var globalContext = &EdgeBuildingContext{}
 
-func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []Edge {
-	path := make([]Edge, len(textRunes)+1)
-	path[0] = Edge{S: 0, EdgeType: INIT, WordCount: 0, UnkCount: 0}
+func (w *Wordcut) buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []Edge {
+	w.MakeOrReusePathSlice(len(textRunes) + 1)
+	w.path[0] = Edge{S: 0, EdgeType: INIT, WordCount: 0, UnkCount: 0}
 	leftBoundary := 0
 	for i, ch := range textRunes {
 		var bestEdge Edge
 		for _, edgeBuilder := range edgeBuilders {
 			globalContext.runes = textRunes
-			globalContext.Path = path
+			globalContext.Path = w.path
 			globalContext.I = i
 			globalContext.Ch = ch
 			globalContext.LeftBoundary = leftBoundary
@@ -31,7 +31,7 @@ func buildPath(textRunes []rune, edgeBuilders []EdgeBuilder) []Edge {
 			leftBoundary = i + 1
 		}
 
-		path[i+1] = bestEdge
+		w.path[i+1] = bestEdge
 	}
-	return path
+	return w.path
 }

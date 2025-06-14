@@ -5,6 +5,7 @@ type edgeBuilderFactory func() EdgeBuilder
 type Wordcut struct {
 	edgeBuilders []EdgeBuilder
 	path         []Edge
+	ranges       []TextRange
 }
 
 func NewWordcut(dict *Dict) *Wordcut {
@@ -65,11 +66,20 @@ func (w *Wordcut) MakeOrReusePathSlice(length int) {
 	}
 }
 
+func (w *Wordcut) MakeOrReuseRangesSlice(length int) {
+	if cap(w.ranges) < length {
+		w.ranges = make([]TextRange, length)
+	} else {
+		w.ranges = w.ranges[:length]
+		clear(w.ranges)
+	}
+}
+
 func (w *Wordcut) Segment(text string) []string {
 	w.Reset()
 	textRunes := []rune(text)
 	path := w.buildPath(textRunes, w.edgeBuilders)
-	ranges := pathToRanges(path)
+	ranges := w.pathToRanges(path)
 	tokens := make([]string, len(ranges))
 	for i, r := range ranges {
 		tokens[i] = string(textRunes[r.s:r.e])
@@ -93,7 +103,7 @@ func (w *Wordcut) WordWrap(text string, maxlen int) []string {
 	w.Reset()
 	textRunes := []rune(text)
 	path := w.buildPath(textRunes, w.edgeBuilders)
-	ranges := pathToRanges(path)
+	ranges := w.pathToRanges(path)
 	tokens := make([]string, len(ranges))
 	currentSpace, start, end, j := 0, 0, 0, 0
 
